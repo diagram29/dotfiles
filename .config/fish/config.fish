@@ -69,3 +69,35 @@ set -x FZF_DEFAULT_COMMAND 'fd --type f --strip-cwd-prefix --hidden --exclude .g
 set -x FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND"
 
 fzf_configure_bindings --directory=\ct --history=\cr
+
+
+
+# マスター専用：環境同期・保守スクリプト
+function maintain
+    echo "--- 🛠️  Master's Environment Maintenance Starting... ---"
+
+    # 1. デスクトップにシンボリックリンクがあるか確認（なければ作成）
+    if not test -L ~/Desktop/config.fish
+        ln -s ~/dotfiles/.config/fish/config.fish ~/Desktop/config.fish
+        echo "✅ Created symbolic link to Desktop."
+    end
+
+    # 2. システムアップデート (CachyOS / pacman)
+    echo "🚀 Updating system..."
+    sudo pacman -Syu --noconfirm
+
+    # 3. パッケージリストの更新保存
+    echo "📋 Saving software list..."
+    pacman -Qe > ~/dotfiles/pkglist.txt
+
+    # 4. GitHubへ自動プッシュ
+    echo "📤 Syncing with GitHub..."
+    cd ~/dotfiles
+    git add .
+    set current_time (date "+%Y-%m-%d %H:%M:%S")
+    git commit -m "Auto-sync: $current_time"
+    git push origin main
+    cd -
+
+    echo "--- ✨ All tasks completed, Master! ---"
+end
