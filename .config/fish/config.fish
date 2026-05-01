@@ -82,6 +82,8 @@ alias memo='e ~/dotfiles/README.md'
 alias aimemo='e ~/dotfiles/AI_CONTEXT.md'
 alias aimemo2='e ~/dotfiles/GEMINI_PROTOCOL.md'
 
+alias confst='e ~/dotfiles/scripts/startup-sequence.sh'
+
 # メンテナンスして再起動
 alias m-reboot='maintain; reboot'
 # config.fish への追加案
