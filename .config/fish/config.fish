@@ -310,3 +310,15 @@ function wiki
         disown
     end
 end
+
+
+
+# オリジナルヘルプを表示する関数
+function fortress
+    # bat が入っているので、色付きで綺麗に表示
+    # --style=plain で余計な枠を消してスッキリ流せます
+    bat --style=plain --paging=never ~/dotfiles/HELP.md
+end
+
+# 短いエイリアスも作っておくと便利です
+alias h='fortress'
