@@ -108,9 +108,16 @@ function rb
     echo (set_color red)"Master, are you sure you want to REBOOT? (y/n)"(set_color normal)
     read -l confirm
     if test "$confirm" = "y"
-        # 最後に GitHub へ同期してから再起動
         maintain
-        sudo reboot
+        # ハイバネートを試みて、失敗したら普通に再起動するか選ぶ
+        if not sudo systemctl hibernate
+            echo (set_color yellow)"⚠️ ハイバネートに失敗しました（スワップ不足）。"(set_color normal)
+            echo "通常の再起動を実行しますか？ (y/n)"
+            read -l r_confirm
+            if test "$r_confirm" = "y"
+                sudo reboot
+            end
+        end
     end
 end
 
