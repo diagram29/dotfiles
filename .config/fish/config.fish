@@ -89,6 +89,11 @@ alias m-reboot='maintain; reboot'
 # config.fish への追加案
 alias f-reboot='maintain; systemctl hibernate'
 
+# zoxide の初期化
+zoxide init fish | source
+
+# マスター専用の「zz」エイリアス (インタラクティブ検索)
+alias zz='zi'
 
 
 # テキストブラウザ w3m のエイリアス
@@ -374,3 +379,44 @@ alias wire='wireshark > /dev/null 2>&1 &; disown'
 # CLI版 (tshark) でリアルタイムにパケットを流し見する
 # -i any : 全てのインターフェースを監視
 alias twire='tshark -i any'
+
+
+function dot-link
+    if test (count $argv) -lt 1
+        echo "使用法: dot-link [ファイル名 または パス]"
+        return
+    end
+
+    # 1. 相対パスを絶対パス（フルパス）に変換
+    set -l target_path (realpath $argv[1])
+
+    # 2. $HOME（家）のパスを取得
+    set -l home_dir $HOME
+
+    # 3. $HOME 以下のパスを抽出
+    set -l rel_path (string replace $home_dir '' $target_path)
+
+    # チェック：もし $HOME 以外のファイルを指定された場合の防衛
+    if test "$target_path" = "$rel_path"
+        set_color red
+        echo "❌ エラー: $HOME 以下のファイルのみ対象です。"
+        set_color normal
+        return
+    end
+
+    # 4. dotfiles 側の目的地を計算
+    set -l dot_dest "$home_dir/dotfiles$rel_path"
+    set -l dot_dir (dirname $dot_dest)
+
+    # 5. 移動先のディレクトリを作成
+    mkdir -p $dot_dir
+
+    # 6. 実体を移動してリンクを張る
+    mv $target_path $dot_dest
+    ln -s $dot_dest $target_path
+
+    set_color green
+    echo "✅ 実体を移動: $dot_dest"
+    echo "✅ リンク作成: $target_path"
+    set_color normal
+end

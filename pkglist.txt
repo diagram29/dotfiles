@@ -181,7 +181,7 @@ nilfs-utils 2.3.0-1.1
 nload 0.7.4-9.1
 nodejs 25.9.0-2
 notion-electron-bin 2.0.0-1
-noto-fonts 1:2026.04.01-1
+noto-fonts 1:2026.05.01-1
 noto-fonts-cjk 20240730-1
 noto-fonts-emoji 1:2.051-1
 npm 11.13.0-1
@@ -285,3 +285,4 @@ xsettingsd 1.0.2-3.1
 yay 12.5.7-1
 yazi 26.1.22-4
 yt-dlp 2026.03.17-1
+zoxide 0.9.9-2.1
