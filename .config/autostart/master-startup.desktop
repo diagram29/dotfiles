@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Master Startup Sequence
+Exec=/home/(ユーザー名)/scripts/startup-sequence.sh
+Icon=system-run
+X-GNOME-Autostart-enabled=true
+X-KDE-Autostart-after=panel
