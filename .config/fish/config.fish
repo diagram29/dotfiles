@@ -8,6 +8,56 @@ source /usr/share/cachyos-fish-config/cachyos-config.fish
 alias win11='quickemu --vm windows-11-Japanese.conf'
 #set -gx GOOGLE_API_KEY ''
 
+# 現在時刻を変数に格納
+set current_time (date '+%Y/%m/%d %H:%M')
+
+set_color green
+# 起動時の挨拶（日本語版）
+echo "--- 🛠️ お帰りなさい、マスター。環境は整っています。 ---"
+echo "現在の時刻は $current_time です。"
+
+# 起動時のメッセージ
+echo "
+   __  ___              __           
+  /  |/  /___ _ ___ / /_ ___  ____
+ / /|_/ // __ `// __// __// _ \/ __/
+/_/  /_/ \__,_/ \__//_/  \___/_/     
+"
+echo "システムの準備が完了しました。本日は何を構築しますか？"
+
+set_color normal
+echo "--- ターミナル「要塞」へようこそ ---"
+
+# 起動時のコマンドガイド
+echo "--- 🛠️  Master's Command Guide ---"
+set_color yellow
+echo " [常用コマンド] "
+set_color normal
+echo "  conf    : Fish設定を編集"
+echo "  nconf   : Neovim設定を編集"
+echo "  reload  : 設定を即座に反映"
+echo "  maintain: GitHubへバックアップ & システム更新"
+echo "----------------------------------"
+
+
+# 'reload' と打つだけで設定を最新にする
+alias reload='source ~/.config/fish/config.fish'
+
+# --- ここから関数版 gui ---
+function gui
+    set current_dir (pwd)
+    set_color cyan
+    echo "📂 Opening $current_dir in Dolphin..."
+    set_color normal
+    dolphin . > /dev/null 2>&1 &
+    disown
+end
+# --- ここまで ---
+
+# ガイドの表示部分はそのまま（あるいは関数の下に移動）
+echo "  gui     : 現在のディレクトリをGUIで開く"
+
+
 # 記憶を引き継ぐGeminiチャット関数
 
 function g-chat
