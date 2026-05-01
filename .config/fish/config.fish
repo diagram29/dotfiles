@@ -77,8 +77,8 @@ function maintain
     echo "--- 🛠️  Master's Environment Maintenance Starting... ---"
 
     # 1. デスクトップにシンボリックリンクがあるか確認（なければ作成）
-    if not test -L ~/Desktop/config.fish
-        ln -s ~/dotfiles/.config/fish/config.fish ~/Desktop/config.fish
+    if not test -L ~/デスクトップ/config.fish
+        ln -s ~/dotfiles/.config/fish/config.fish ~/デスクトップ/config.fish
         echo "✅ Created symbolic link to Desktop."
     end
 
