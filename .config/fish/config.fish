@@ -67,6 +67,8 @@ echo "  memo,aimemo     : 管理テキストを開く"
 echo "  gui       : 現在ディレクトリをGUIで開く"
 echo "  win11    : win11起動"
 echo "  ai-ask,ai-file : ask ai会話 file ファイル参照会話  "
+echo "  nnow    : 通信量表示リアルタイム"
+echo "  nstat    : 1日の通信積算"
 echo "  maintain: GitHubへバックアップ & システム更新"
 echo "----------------------------------"
 
@@ -79,6 +81,11 @@ alias memo='e ~/dotfiles/README.md'
 # AIに読み込ませるための環境・設定サマリー
 alias aimemo='e ~/dotfiles/AI_CONTEXT.md'
 alias aimemo2='e ~/dotfiles/GEMINI_PROTOCOL.md'
+
+# メンテナンスして再起動
+alias m-reboot='maintain; reboot'
+# config.fish への追加案
+alias f-reboot='maintain; systemctl hibernate'
 
 
 
@@ -93,6 +100,19 @@ alias google='ddgr -n 5 --reg jp-jp'
 # CachyOSのデフォルト名に合わせて指定
 set -x BROWSER google-chrome-stable
 
+
+
+
+# 再起動のエイリアス（安全確認付き）
+function rb
+    echo (set_color red)"Master, are you sure you want to REBOOT? (y/n)"(set_color normal)
+    read -l confirm
+    if test "$confirm" = "y"
+        # 最後に GitHub へ同期してから再起動
+        maintain
+        sudo reboot
+    end
+end
 
 # Gemini CLI や Ollama (Gemma) に現在のコンテキストを流し込む
 # 使い方: ask-ai "この環境で〇〇を自動化するスクリプトを書いて"
@@ -322,3 +342,26 @@ end
 
 # 短いエイリアスも作っておくと便利です
 alias h='fortress'
+
+
+# --- ネットワーク監視兵装 ---
+
+# リアルタイム速度監視 (nload)
+alias nnow='nload'
+
+# 1日の積算量を確認 (vnstat)
+function nstat
+    set_color yellow
+    echo "--- 📊 本日の通信積算量 ---"
+    set_color normal
+    vnstat -d | grep (date '+%Y-%m-%d') # 今日の日付の行だけ抽出
+end
+
+# --- パケット解析兵装 ---
+
+# GUI版 Wireshark をバックグラウンドで起動
+alias wire='wireshark > /dev/null 2>&1 &; disown'
+
+# CLI版 (tshark) でリアルタイムにパケットを流し見する
+# -i any : 全てのインターフェースを監視
+alias twire='tshark -i any'
