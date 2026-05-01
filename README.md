@@ -32,3 +32,17 @@ GUI: 「ここからはマウスがいいな」と思ったら gui と打つ。
 - **google (ddgr)**: Google/DuckDuckGo 検索。結果を 5 件表示し、番号選択で Chrome 起動[cite: 1, 2]。
 - **wiki (Custom Function)**: Wikipedia API 直結。概要を CUI で読み、必要時のみ Chrome へ移行。
 - **web (w3m)**: 超軽量テキストブラウザでの直接閲覧。
+
+
+AI 連携・自動化兵装 (Hybrid Context System)
+ask-ai [命令]
+
+AI_CONTEXT, README, GEMINI_PROTOCOL の3つを読み込んだ状態で AI に相談する基本コマンド。
+
+ask-file [ファイル] [命令]
+
+上記の基本コンテキストに加えて、特定の解析対象ファイルをパイプで流し込む重装コマンド。
+
+GEMINI_PROTOCOL.md
+
+ブラウザ版 Gemini の高度な思考プロトコル（INVISIBLE PERSONALIZATION, 6-STAGE FIREWALL等）を移植した、AI の「規律」定義ファイル。

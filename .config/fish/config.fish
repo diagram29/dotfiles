@@ -1,11 +1,36 @@
 source /usr/share/cachyos-fish-config/cachyos-config.fish
 
+
+
+# ============================================================
+# 🛠️ Master's Mode Switch (nvim / kate / code)
+# ============================================================
+set -gx MASTER_EDITOR kate   # ここを 'kate' や 'code' に変えるだけで一気に切り替わります
+# ============================================================
+
+# モードに応じたエディタ実行コマンドの定義
+switch $MASTER_EDITOR
+    case nvim
+        alias e='nvim'
+    case kate
+        alias e='kate'
+    case code
+        alias e='code' # 標準の code コマンドを使用
+end
+
+
+
+
+
+
+
 # overwrite greeting
 # potentially disabling fastfetch
 #function fish_greeting
 #    # smth smth
 #end
-alias win11='quickemu --vm windows-11-Japanese.conf'
+alias win11='quickemu --vm ~/windows-11/windows-11-Japanese.conf'
+
 #set -gx GOOGLE_API_KEY ''
 
 # 現在時刻を変数に格納
@@ -38,8 +63,10 @@ echo "  nconf   : Neovim設定を編集"
 echo "  reload  : 設定を即座に反映"
 echo "  web     : テキストブラウザ (w3m) を起動"
 echo "  google  : Google検索をブラウザで開く"
-echo "  memo     : 管理テキストを開く"
+echo "  memo,aimemo     : 管理テキストを開く"
 echo "  gui       : 現在ディレクトリをGUIで開く"
+echo "  win11    : win11起動"
+echo "  ai-ask,ai-file : ask ai会話 file ファイル参照会話  "
 echo "  maintain: GitHubへバックアップ & システム更新"
 echo "----------------------------------"
 
@@ -48,7 +75,13 @@ echo "----------------------------------"
 alias reload='source ~/.config/fish/config.fish'
 
 # 管理用メモを一瞬で開く
-alias memo='nvim ~/dotfiles/README.md'
+alias memo='e ~/dotfiles/README.md'
+# AIに読み込ませるための環境・設定サマリー
+alias aimemo='e ~/dotfiles/AI_CONTEXT.md'
+alias aimemo2='e ~/dotfiles/GEMINI_PROTOCOL.md'
+
+
+
 # テキストブラウザ w3m のエイリアス
 alias web='w3m'
 
@@ -59,6 +92,43 @@ alias google='ddgr -n 5 --reg jp-jp'
 # 番号を選んだ時に Chrome で開くための環境変数
 # CachyOSのデフォルト名に合わせて指定
 set -x BROWSER google-chrome-stable
+
+
+# Gemini CLI や Ollama (Gemma) に現在のコンテキストを流し込む
+# 使い方: ask-ai "この環境で〇〇を自動化するスクリプトを書いて"
+# 1. 背景知識（三位一体）のみで相談する
+function ask-ai
+    # 3つの基本コンテキストを連結
+    set -l full_prompt (cat ~/dotfiles/AI_CONTEXT.md ~/dotfiles/README.md ~/dotfiles/GEMINI_PROTOCOL.md; echo -e "\n--- QUESTION ---\n$argv")
+    
+    echo $full_prompt | gemini-js
+end 
+
+# 使い方: ask-file [ターゲットファイル] "質問内容"
+function ask-file
+    if test (count $argv) -lt 2
+        echo "使用法: ask-file [ファイル名] \"質問内容\""
+        return
+    end
+
+    set -l target $argv[1]
+    set -l question $argv[2]
+
+    # 4つのコンテキストを結合して AI に流し込む
+    # 1. AI_CONTEXT      : マスターの属性・基本理念
+    # 2. README.md       : 現在の兵装・操作マニュアル
+    # 3. GEMINI_PROTOCOL : ブラウザ版の invisible な制約・設定（作成予定）
+    # 4. $target         : 解析対象のファイル
+    if test -f $target
+        cat ~/dotfiles/AI_CONTEXT.md \
+            ~/dotfiles/README.md \
+            ~/dotfiles/GEMINI_PROTOCOL.md \
+            $target | gemini-js "$question"
+    else
+        echo "エラー: $target が見つかりません。"
+    end
+end
+
 
 
 
@@ -198,16 +268,16 @@ set -gx EDITOR nvim
 set -gx VISUAL nvim
 
 # 'v' だけで nvim を起動
-alias v='nvim'
+alias v='e'
 # 'vf' で config.fish を即座に編集
-alias vf='nvim ~/dotfiles/.config/fish/config.fish'
+alias vf='e ~/dotfiles/.config/fish/config.fish'
 
 
 # 'conf' と打つだけで、設定ファイル（実体）を Neovim で開く
-alias conf='nvim ~/dotfiles/.config/fish/config.fish'
+alias conf='e ~/dotfiles/.config/fish/config.fish'
 
 # ついでに Neovim の設定も一瞬で開けるように
-alias nconf='nvim ~/dotfiles/.config/nvim/init.lua'
+alias nconf='e ~/dotfiles/.config/nvim/init.lua'
 
 
 
