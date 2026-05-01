@@ -90,6 +90,17 @@ function maintain
     echo "📋 Saving software list..."
     pacman -Qe > ~/dotfiles/pkglist.txt
 
+    # maintain 関数内の「4. GitHubへ自動プッシュ」の前に挿入を推奨
+echo "🔍 Checking fish config syntax..."
+fish -n ~/.config/fish/config.fish
+if test $status -eq 0
+    echo "✅ Syntax OK."
+else
+    echo "❌ Syntax Error! Please fix before pushing."
+    return 1
+end
+
+
     # 4. GitHubへ自動プッシュ
     echo "📤 Syncing with GitHub..."
     cd ~/dotfiles
@@ -101,3 +112,30 @@ function maintain
 
     echo "--- ✨ All tasks completed, Master! ---"
 end
+
+# 上の階層へ素早く移動
+alias ..='cd ..'
+alias ...='cd ../..'
+
+# ディレクトリ移動後に自動で ls (eza) を実行
+function cd
+    builtin cd $argv
+    ls
+end
+
+
+# デフォルトエディタを Neovim に設定
+set -gx EDITOR nvim
+set -gx VISUAL nvim
+
+# 'v' だけで nvim を起動
+alias v='nvim'
+# 'vf' で config.fish を即座に編集
+alias vf='nvim ~/dotfiles/.config/fish/config.fish'
+
+
+# 'conf' と打つだけで、設定ファイル（実体）を Neovim で開く
+alias conf='nvim ~/dotfiles/.config/fish/config.fish'
+
+# ついでに Neovim の設定も一瞬で開けるように
+alias nconf='nvim ~/dotfiles/.config/nvim/init.lua'

@@ -1,4 +1,4 @@
-<LeftMouse>-- 行番号を表示
+-- 行番号を表示
 vim.opt.number = true
 -- カーソルのある行を強調
 vim.opt.cursorline = true
@@ -10,5 +10,5 @@ vim.opt.expandtab = true
 vim.opt.clipboard = "unnamedplus"
 -- 色付けを有効にする
 vim.cmd("syntax on")
--- 24bitカラーを有効にする（WezTermなら必須！）
-vim.opt.termguicolors = truei
+-- 24bitカラーを有効にする
+vim.opt.termguicolors = true

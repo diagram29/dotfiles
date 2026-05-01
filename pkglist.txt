@@ -141,7 +141,7 @@ lib32-mesa 2:26.0.6-2
 lib32-opencl-mesa 2:26.0.6-2
 lib32-vulkan-intel 2:26.0.6-2
 libdvdcss 1.5.0-1.1
-libgsf 1.14.57-1.1
+libgsf 1.14.58-1.1
 libguestfs 1.56.2-5
 libopenraw 0.3.7-2.1
 libreoffice-still 25.8.6-5.1
