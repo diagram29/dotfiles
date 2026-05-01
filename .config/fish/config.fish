@@ -36,12 +36,31 @@ set_color normal
 echo "  conf    : Fish設定を編集"
 echo "  nconf   : Neovim設定を編集"
 echo "  reload  : 設定を即座に反映"
+echo "  web     : テキストブラウザ (w3m) を起動"
+echo "  google  : Google検索をブラウザで開く"
+echo "  memo     : 管理テキストを開く"
+echo "  gui       : 現在ディレクトリをGUIで開く"
 echo "  maintain: GitHubへバックアップ & システム更新"
 echo "----------------------------------"
 
 
 # 'reload' と打つだけで設定を最新にする
 alias reload='source ~/.config/fish/config.fish'
+
+# 管理用メモを一瞬で開く
+alias memo='nvim ~/dotfiles/README.md'
+# テキストブラウザ w3m のエイリアス
+alias web='w3m'
+
+# 検索コマンドの定義
+# -n 5 : 検索結果を5件だけ出す（スッキリさせるため）
+# -c jp : 日本のGoogleを使用
+alias google='ddgr -n 5 --reg jp-jp'
+# 番号を選んだ時に Chrome で開くための環境変数
+# CachyOSのデフォルト名に合わせて指定
+set -x BROWSER google-chrome-stable
+
+
 
 # --- ここから関数版 gui ---
 function gui
@@ -189,3 +208,35 @@ alias conf='nvim ~/dotfiles/.config/fish/config.fish'
 
 # ついでに Neovim の設定も一瞬で開けるように
 alias nconf='nvim ~/dotfiles/.config/nvim/init.lua'
+
+
+
+# Wikipedia 検索関数
+function wiki
+    if test -z "$argv"
+        echo "キーワードを入力してください (例: wiki 屋久島)"
+        return
+    end
+
+    # Wikipedia API でサマリーを取得
+    set -l summary (curl -s "https://ja.wikipedia.org/api/rest_v1/page/summary/$argv")
+    
+    # 内容があるかチェックして表示
+    set -l extract (echo $summary | jq -r '.extract // "見つかりませんでした"')
+    
+    set_color yellow
+    echo "--- Wikipedia Summary: $argv ---"
+    set_color normal
+    echo $extract
+    echo ""
+    
+    set_color cyan
+    echo "詳細を Chrome で開きますか？ (y/n)"
+    set_color normal
+    
+    read -l confirm
+    if test "$confirm" = "y"
+        google-chrome-stable "https://ja.wikipedia.org/wiki/$argv" > /dev/null 2>&1 &
+        disown
+    end
+end
